@@ -61,7 +61,11 @@ export const useWebcamCapture = (stickerImg, title) => {
         const height = canvasRef.getAttribute("height");
         ctx.drawImage(videoRef, 0, 0, width, height);
 
-        if (stickerImg) {
+        if (
+          stickerImg &&
+          stickerImg.complete &&
+          stickerImg.naturalHeight !== 0
+        ) {
           const bb = canvasRef.getBoundingClientRect();
           const x = ((mousePos.current.x - bb.left) / bb.width) * width;
           const y = ((mousePos.current.y - bb.top) / bb.height) * height;

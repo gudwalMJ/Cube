@@ -2,8 +2,12 @@ import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useWebcamCapture } from "./useWebcamCapture";
 // import logo from './logo.svg'
-import logo from "./slap.png";
-
+import bravoSticker from "./stickers/bravo.png";
+import confettiSticker from "./stickers/confetti.png";
+import eyesSticker from "./stickers/eyes.png";
+import fireSticker from "./stickers/fire.png";
+import hornsSticker from "./stickers/horns.png";
+import slapSticker from "./stickers/slap.png";
 import { Link, Switch, Route, Redirect } from "react-router-dom";
 
 const useStyles = createUseStyles((theme) => ({
@@ -44,6 +48,11 @@ const useStyles = createUseStyles((theme) => ({
   Stickers: {
     "& img": {
       height: "4rem",
+      cursor: "pointer",
+      transition: "transform 0.2s ease-in-out",
+      "&:hover": {
+        transform: "scale(1.1)",
+      },
     },
   },
   Gallery: {
@@ -64,8 +73,20 @@ const useStyles = createUseStyles((theme) => ({
   },
 }));
 
-const stickers = [logo].map((url) => {
-  const img = document.createElement("img");
+const defaultStickers = [
+  bravoSticker,
+  confettiSticker,
+  eyesSticker,
+  fireSticker,
+  hornsSticker,
+  slapSticker,
+];
+
+const stickers = defaultStickers.map((url) => {
+  const img = new Image();
+  /*img.onload = () => {
+    console.log(`Sticker loaded: ${url}`);
+  };*/
   img.src = url;
   return { img, url };
 });
@@ -74,7 +95,7 @@ function App(props) {
   // css classes from JSS hook
   const classes = useStyles(props);
   // currently active sticker
-  const [sticker, setSticker] = useState();
+  const [sticker, setSticker] = useState(stickers[0]);
   // title for the picture that will be captured
   const [title, setTitle] = useState("SLAPPE!");
 
@@ -106,7 +127,7 @@ function App(props) {
         </nav>
       </header>
       <Switch>
-        /** * Main app route */
+        /** */ * Main app route */
         <Route path="/" exact>
           <main>
             <section className={classes.Gallery}>
@@ -119,9 +140,11 @@ function App(props) {
             </section>
             <section className={classes.Stickers}>
               Step 2: select your sticker...
-              <button onClick={() => setSticker(stickers[0])}>
-                <img src={stickers[0].url} />
-              </button>
+              {stickers.map((stickerItem, index) => (
+                <button key={index} onClick={() => setSticker(stickerItem)}>
+                  <img src={stickerItem.url} alt={`Sticker ${index}`} />
+                </button>
+              ))}
             </section>
             <section className={classes.Main}>
               Step three: Slap your self!
