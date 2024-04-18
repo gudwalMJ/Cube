@@ -24,8 +24,8 @@ However, we would like for you to show off your strengths as a developer by impr
 - Make it look really nice
 - Let users pick from multiple (custom) stickers -- DONE
 - Improve the workflow and ux
-- Show multiple captured images in a gallery
-- Let users download or share the captured pics
+- Show multiple captured images in a gallery -- DONE
+- Let users download or share the captured pics -- DOWNLOAD DONE
 - Add super cool effects to webcam feed
 - Organize, document and test the code
 - Integrate with zoom, teams, meet...

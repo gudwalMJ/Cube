@@ -19,11 +19,10 @@ const useStyles = createUseStyles((theme) => ({
     color: theme.palette.text,
     fontFamily: "sans-serif",
   },
-
   App: {
-    padding: "20px",
+    padding: "0",
     background: theme.palette.primary,
-    maxWidth: "800px",
+    maxWidth: "100%",
     minHeight: "600px",
     margin: "auto",
     "& a": {
@@ -31,17 +30,41 @@ const useStyles = createUseStyles((theme) => ({
     },
   },
   Header: {
-    "&  h1": {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#000000",
+    color: "#ffffff",
+    padding: "5px 10px",
+    "& h1": {
       fontFamily: "sans-serif",
       cursor: "pointer",
-      fontSize: "4rem",
+      fontSize: "1.5rem",
+    },
+    "& nav": {
+      "& ul": {
+        listStyle: "none",
+        padding: 0,
+        margin: 0,
+        display: "flex",
+        gap: "20px",
+        "& li": {
+          "& a": {
+            color: "#ffffff",
+            textDecoration: "none",
+            "&:hover": {
+              textDecoration: "underline",
+            },
+          },
+        },
+      },
     },
   },
   Main: {
     background: theme.palette.secondary,
 
     "& canvas": {
-      width: "100%",
+      width: "600px",
       height: "auto",
     },
     "& video": {
@@ -75,6 +98,7 @@ const useStyles = createUseStyles((theme) => ({
     gridTemplateColumns: "repeat(2, 1fr)",
     gap: "10px",
     margin: "auto",
+    marginBottom: "20px",
   },
   Picture: {
     background: "white",
@@ -89,10 +113,10 @@ const useStyles = createUseStyles((theme) => ({
       borderRadius: "8px",
     },
     "& h3": {
-      padding: "4px 8px", // Adjust text padding
+      padding: "4px 8px",
       textAlign: "center",
-      background: "rgba(0, 0, 0, 0.5)",
-      color: "white", // Optional: if you want the title text color to be white
+
+      color: "black",
       position: "absolute",
       bottom: "17px",
       left: "0",
@@ -114,7 +138,7 @@ const useStyles = createUseStyles((theme) => ({
     border: "1px solid #ccc",
     cursor: "pointer",
     "&:hover": {
-      opacity: 0.7,
+      opacity: 0.6,
     },
   },
 }));
@@ -175,10 +199,7 @@ function App(props) {
     <div className={classes.App}>
       <header className={classes.Header}>
         <h1>SlapSticker</h1>
-        <p>
-          Have you ever said something so dumb, you just wanted to slap
-          yourself? Well now you can! But you can also do other things!
-        </p>
+
         <nav>
           <ul>
             <li>
@@ -193,6 +214,10 @@ function App(props) {
       <Switch>
         <Route path="/" exact>
           <main>
+            <p>
+              Have you ever said something so dumb, you just wanted to slap
+              yourself? Well now you can! But you can also do other things!
+            </p>
             <section className={classes.Gallery}>
               Step one: Give it a name
               <input
