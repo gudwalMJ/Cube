@@ -71,10 +71,10 @@ export const useWebcamCapture = (stickerImg, title) => {
           const y = ((mousePos.current.y - bb.top) / bb.height) * height;
           ctx.drawImage(
             stickerImg,
-            x - width * 0.2,
-            y - width * 0.2,
-            width * 0.4,
-            width * 0.4
+            x - width * 0.1,
+            y - width * 0.1,
+            width * 0.2,
+            width * 0.2
           );
         }
         requestAnimationFrame(renderFrame);

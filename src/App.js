@@ -23,7 +23,7 @@ const useStyles = createUseStyles((theme) => ({
     padding: "0",
     background: theme.palette.primary,
     maxWidth: "100%",
-    minHeight: "600px",
+    minHeight: "100vh",
     margin: "auto",
     "& a": {
       color: theme.palette.text,
@@ -33,9 +33,12 @@ const useStyles = createUseStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#000000",
-    color: "#ffffff",
-    padding: "5px 10px",
+    backgroundColor: "ede8f5",
+    color: "#000",
+    padding: "1rem",
+    marginLeft: "1rem",
+    marginRight: "1rem",
+    marginBottom: "5rem",
     "& h1": {
       fontFamily: "sans-serif",
       cursor: "pointer",
@@ -50,7 +53,7 @@ const useStyles = createUseStyles((theme) => ({
         gap: "20px",
         "& li": {
           "& a": {
-            color: "#ffffff",
+            color: "#000",
             textDecoration: "none",
             "&:hover": {
               textDecoration: "underline",
@@ -61,11 +64,27 @@ const useStyles = createUseStyles((theme) => ({
     },
   },
   Main: {
-    background: theme.palette.secondary,
-
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "20px",
+    paddingBottom: "80px",
+    margin: "0 auto",
+    background: "white",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    borderRadius: "8px",
+    maxWidth: "700px",
+    width: "100%",
+    "&:after": {
+      content: '""',
+      display: "block",
+      height: "20px",
+    },
     "& canvas": {
-      width: "600px",
-      height: "auto",
+      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
+      margin: "20px",
+      maxWidth: "700px",
     },
     "& video": {
       display: "none",
@@ -102,33 +121,32 @@ const useStyles = createUseStyles((theme) => ({
   },
   Picture: {
     background: "white",
-    padding: 4,
+    padding: "1rem",
+    paddingBottom: "2rem",
     position: "relative",
-    display: "inline-block",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
     borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    margin: "1rem",
     "& img": {
       maxWidth: "100%",
-      maxHeight: "300px",
+      maxHeight: "200px",
       objectFit: "cover",
       borderRadius: "8px",
     },
     "& h3": {
-      padding: "4px 8px",
-      textAlign: "center",
-
       color: "black",
-      position: "absolute",
-      bottom: "17px",
-      left: "0",
-      right: "0",
+      textAlign: "center",
+      fontSize: "0.9rem",
+      wordBreak: "break-word",
     },
   },
   Actions: {
     display: "flex",
     justifyContent: "center",
     gap: "10px",
-    paddingTop: "10px",
-    marginTop: "20px",
     "& img": {
       height: "25px",
       width: "25px",
@@ -140,6 +158,16 @@ const useStyles = createUseStyles((theme) => ({
     "&:hover": {
       opacity: 0.6,
     },
+  },
+  DescriptiveText: {
+    fontSize: "1.2rem", // Larger font size for readability
+    fontWeight: "400", // Regular weight - adjust as needed
+    lineHeight: "1.6", // Space between lines for readability
+    color: theme.palette.text, // Text color from the theme
+    margin: "0 auto", // Centering the paragraph if needed
+    maxWidth: "700px", // Maximum width of the paragraph for better readability
+    textAlign: "justify", // Justify the text or use 'left' based on preference
+    marginBottom: "2rem", // Space after the paragraph before the next section
   },
 }));
 
@@ -214,9 +242,9 @@ function App(props) {
       <Switch>
         <Route path="/" exact>
           <main>
-            <p>
+            <p className={classes.DescriptiveText}>
               Have you ever said something so dumb, you just wanted to slap
-              yourself? Well now you can! But you can also do other things!
+              yourself? Well now you can! But you can also apply other stickers!
             </p>
             <section className={classes.Gallery}>
               Step one: Give it a name

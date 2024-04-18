@@ -1,8 +1,7 @@
 export const theme = {
   palette: {
-    primary: "#2266dd",
-    secondary: "white",
+    primary: "linear-gradient(#8697c4, #a8b9d6)",
     background: "#eee",
-    text: "#fff",
+    text: "#000",
   },
 };
