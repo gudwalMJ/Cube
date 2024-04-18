@@ -1,6 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useWebcamCapture } from "./useWebcamCapture";
+import { Link, Switch, Route, Redirect } from "react-router-dom";
 // import logo from './logo.svg'
 import bravoSticker from "./stickers/bravo.png";
 import confettiSticker from "./stickers/confetti.png";
@@ -8,7 +9,6 @@ import eyesSticker from "./stickers/eyes.png";
 import fireSticker from "./stickers/fire.png";
 import hornsSticker from "./stickers/horns.png";
 import slapSticker from "./stickers/slap.png";
-import { Link, Switch, Route, Redirect } from "react-router-dom";
 
 const useStyles = createUseStyles((theme) => ({
   "@global body": {
@@ -56,20 +56,61 @@ const useStyles = createUseStyles((theme) => ({
     },
   },
   Gallery: {
-    "& img": {
-      height: "16rem",
-    },
+    // The gallery itself is a flex container now
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center", // Center the title and grid on the cross axis
+  },
+  GalleryTitle: {
+    marginBottom: "20px", // Add some space below the title
+    textAlign: "center",
+    width: "100%", // Ensure the title stretches across the full width
+    // You can add additional styling here for the title
+  },
+  GalleryGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "10px",
+    margin: "auto",
   },
   Picture: {
     background: "black",
     padding: 4,
     position: "relative",
     display: "inline-block",
-    "& h3": {
-      padding: 8,
-      textAlign: "center",
-      width: "100%",
+
+    "& img": {
+      maxWidth: "100%",
+      maxHeight: "300px",
+      objectFit: "cover",
+      borderRadius: "8px",
     },
+    "& h3": {
+      padding: "4px 8px", // Adjust text padding
+      textAlign: "center",
+      background: "rgba(0, 0, 0, 0.5)",
+      color: "white", // Optional: if you want the title text color to be white
+      position: "absolute",
+      bottom: "0",
+      left: "0",
+      right: "0",
+    },
+    "&:hover $DeleteButton": {
+      visibility: "visible",
+    },
+  },
+  DeleteButton: {
+    visibility: "hidden", // Hide the delete button by default
+    position: "absolute",
+    bottom: "10px", // Positioning at the bottom of the image
+    left: "50%",
+    transform: "translateX(-50%)", // Center the button under the image
+    background: "red",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    padding: "4px 8px",
+    cursor: "pointer",
   },
 }));
 
@@ -104,8 +145,15 @@ function App(props) {
     handleVideoRef, // callback function to set ref for invisible video element
     handleCanvasRef, // callback function to set ref for main canvas element
     handleCapture, // callback function to trigger taking the picture
-    picture, // latest captured picture data object
+    pictures, // latest captured picture data object
+    setPictures,
   ] = useWebcamCapture(sticker?.img, title);
+
+  const removePicture = (indexToRemove) => {
+    setPictures((currentPictures) =>
+      currentPictures.filter((_, index) => index !== indexToRemove)
+    );
+  };
 
   return (
     <div className={classes.App}>
@@ -113,7 +161,7 @@ function App(props) {
         <h1>SlapSticker</h1>
         <p>
           Have you ever said something so dumb, you just wanted to slap
-          yourself? Well now you can!
+          yourself? Well now you can! But you can also do other things!
         </p>
         <nav>
           <ul>
@@ -127,7 +175,6 @@ function App(props) {
         </nav>
       </header>
       <Switch>
-        /** */ * Main app route */
         <Route path="/" exact>
           <main>
             <section className={classes.Gallery}>
@@ -147,7 +194,7 @@ function App(props) {
               ))}
             </section>
             <section className={classes.Main}>
-              Step three: Slap your self!
+              Step three: Slap yourself!
               <video ref={handleVideoRef} />
               <canvas
                 ref={handleCanvasRef}
@@ -157,13 +204,26 @@ function App(props) {
               />
             </section>
             <section className={classes.Gallery}>
-              Step 4: Cherish this moment forever
-              {picture && (
-                <div className={classes.Picture}>
-                  <img src={picture.dataUri} />
-                  <h3>{picture.title}</h3>
-                </div>
-              )}
+              <h2 className={classes.GalleryTitle}>
+                Step 4: Cherish this moment forever
+              </h2>
+              <div className={classes.GalleryGrid}>
+                {pictures.map((picture, index) => (
+                  <div key={index} className={classes.Picture}>
+                    <img
+                      src={picture.dataUri}
+                      alt={`Captured moment ${index}`}
+                    />
+                    <h3>{picture.title}</h3>
+                    <button
+                      className={classes.DeleteButton}
+                      onClick={() => removePicture(index)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
             </section>
           </main>
         </Route>
