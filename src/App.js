@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useWebcamCapture } from "./useWebcamCapture";
 import { Link, Switch, Route, Redirect } from "react-router-dom";
-// import logo from './logo.svg'
+// import stickers
 import bravoSticker from "./stickers/bravo.png";
 import confettiSticker from "./stickers/confetti.png";
 import eyesSticker from "./stickers/eyes.png";
 import fireSticker from "./stickers/fire.png";
 import hornsSticker from "./stickers/horns.png";
 import slapSticker from "./stickers/slap.png";
+// import icons
+import deleteIcon from "./icons/delete.png";
+import downloadIcon from "./icons/download.png";
 
 const useStyles = createUseStyles((theme) => ({
   "@global body": {
@@ -74,11 +77,11 @@ const useStyles = createUseStyles((theme) => ({
     margin: "auto",
   },
   Picture: {
-    background: "black",
+    background: "white",
     padding: 4,
     position: "relative",
     display: "inline-block",
-
+    borderRadius: "8px",
     "& img": {
       maxWidth: "100%",
       maxHeight: "300px",
@@ -91,26 +94,28 @@ const useStyles = createUseStyles((theme) => ({
       background: "rgba(0, 0, 0, 0.5)",
       color: "white", // Optional: if you want the title text color to be white
       position: "absolute",
-      bottom: "0",
+      bottom: "17px",
       left: "0",
       right: "0",
     },
-    "&:hover $DeleteButton": {
-      visibility: "visible",
+  },
+  Actions: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
+    paddingTop: "10px",
+    marginTop: "20px",
+    "& img": {
+      height: "25px",
+      width: "25px",
     },
   },
-  DeleteButton: {
-    visibility: "hidden", // Hide the delete button by default
-    position: "absolute",
-    bottom: "10px", // Positioning at the bottom of the image
-    left: "50%",
-    transform: "translateX(-50%)", // Center the button under the image
-    background: "red",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    padding: "4px 8px",
+  ActionButton: {
+    border: "1px solid #ccc",
     cursor: "pointer",
+    "&:hover": {
+      opacity: 0.7,
+    },
   },
 }));
 
@@ -149,6 +154,17 @@ function App(props) {
     setPictures,
   ] = useWebcamCapture(sticker?.img, title);
 
+  // To download the image
+  const handleDownload = (dataUri, title) => {
+    const link = document.createElement("a");
+    link.download = `${title.replace(/\s+/g, "_")}.png`;
+    link.href = dataUri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // To remove the picture from the gallery
   const removePicture = (indexToRemove) => {
     setPictures((currentPictures) =>
       currentPictures.filter((_, index) => index !== indexToRemove)
@@ -215,12 +231,22 @@ function App(props) {
                       alt={`Captured moment ${index}`}
                     />
                     <h3>{picture.title}</h3>
-                    <button
-                      className={classes.DeleteButton}
-                      onClick={() => removePicture(index)}
-                    >
-                      Delete
-                    </button>
+                    <div className={classes.Actions}>
+                      <img
+                        src={downloadIcon}
+                        className={classes.ActionButton}
+                        alt="Download"
+                        onClick={() =>
+                          handleDownload(picture.dataUri, picture.title)
+                        }
+                      />
+                      <img
+                        src={deleteIcon}
+                        className={classes.ActionButton}
+                        alt="Delete"
+                        onClick={() => removePicture(index)}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
