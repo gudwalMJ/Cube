@@ -9,6 +9,9 @@ import eyesSticker from "./stickers/eyes.png";
 import fireSticker from "./stickers/fire.png";
 import hornsSticker from "./stickers/horns.png";
 import slapSticker from "./stickers/slap.png";
+import crownSticker from "./stickers/crown.png";
+import heartEyesSticker from "./stickers/heartEyes.png";
+import confettiTwoSticker from "./stickers/confettiTwo.png";
 // import icons
 import deleteIcon from "./icons/delete.png";
 import downloadIcon from "./icons/download.png";
@@ -63,17 +66,35 @@ const useStyles = createUseStyles((theme) => ({
       },
     },
   },
-  CameraSection: {
+  DescriptiveText: {
+    flexDirection: "column",
+    alignItems: "left",
+    justifyContent: "center",
+    fontSize: "1.2rem",
+    color: theme.palette.text,
+    margin: "0 auto",
+    maxWidth: "650px",
+    marginBottom: "2rem",
+    "& p": {
+      marginBottom: "-10px",
+    },
+  },
+  DescriptiveTextBold: {
+    fontWeight: "600",
+  },
+  CameraAndSticker: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  CamSection: {
     padding: "20px",
-    paddingBottom: "100px",
+    paddingBottom: "80px",
     margin: "0 auto",
     background: "white",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    borderRadius: "8px",
+    borderRadius: "4px",
     maxWidth: "700px",
     width: "100%",
     "&:after": {
@@ -85,28 +106,17 @@ const useStyles = createUseStyles((theme) => ({
       boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
       margin: "20px",
       maxWidth: "600px",
+      borderRadius: "4px",
     },
     "& video": {
       display: "none",
     },
   },
-  DescriptiveText: {
-    flexDirection: "column",
-    alignItems: "left",
-    justifyContent: "center",
-    fontSize: "1.2rem",
-    color: theme.palette.text,
-    margin: "0 auto",
-    maxWidth: "650px",
-    marginBottom: "1rem",
-  },
-  DescriptiveTextBold: {
-    fontWeight: "600",
-  },
   Stickers: {
     display: "flex",
     flexDirection: "column",
-    marginTop: "20px",
+    overflowY: "auto",
+    maxHeight: "calc(3.5rem * 6)",
     "& img": {
       height: "3rem",
       cursor: "pointer",
@@ -116,17 +126,44 @@ const useStyles = createUseStyles((theme) => ({
       },
     },
   },
-  Gallery: {
-    // The gallery itself is a flex container now
+  ImageName: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center", // Center the title and grid on the cross axis
+    alignItems: "center",
+    paddingTop: "20px",
+    width: "100%",
+    "& input": {
+      fontSize: "1rem",
+      padding: "10px",
+      width: "50%",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      boxShadow: "inset 0 1px 2px rgba(0,0,0,0.1)",
+      outline: "none",
+      "&:focus": {
+        borderColor: "#8697c4",
+        boxShadow: "0 0 0 0.2rem rgba(134, 151, 196, .25)",
+      },
+      "&::placeholder": {
+        color: "#999",
+        opacity: 1,
+      },
+    },
+    "& label": {
+      fontSize: "1.1rem", // Slightly larger label text
+      color: theme.palette.text,
+      marginBottom: "5px",
+    },
+  },
+  Gallery: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   GalleryTitle: {
-    marginBottom: "20px", // Add some space below the title
+    marginBottom: "20px",
     textAlign: "center",
-    width: "100%", // Ensure the title stretches across the full width
-    // You can add additional styling here for the title
+    width: "100%",
   },
   GalleryGrid: {
     display: "grid",
@@ -146,6 +183,10 @@ const useStyles = createUseStyles((theme) => ({
     borderRadius: "8px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
     margin: "1rem",
+    transition: "transform 0.3s ease-in-out",
+    "&:hover": {
+      transform: "scale(1.1)",
+    },
     "& img": {
       maxWidth: "100%",
       maxHeight: "200px",
@@ -181,9 +222,12 @@ const defaultStickers = [
   slapSticker,
   bravoSticker,
   confettiSticker,
-  eyesSticker,
+  confettiTwoSticker,
+  heartEyesSticker,
   fireSticker,
   hornsSticker,
+  crownSticker,
+  eyesSticker,
 ];
 
 const stickers = defaultStickers.map((url) => {
@@ -201,7 +245,7 @@ function App(props) {
   // currently active sticker
   const [sticker, setSticker] = useState(stickers[0]);
   // title for the picture that will be captured
-  const [title, setTitle] = useState("Title");
+  const [title, setTitle] = useState();
 
   // webcam behavior hook
   const [
@@ -255,43 +299,43 @@ function App(props) {
                 </p>
                 <p className={classes.DescriptiveTextBold}>Well now you can!</p>
                 <p> But why stop there? Try the other stickers as well!</p>
-
                 <p>Start with naming you picture and selecting a sticker.</p>
                 <p>With just a click the picture is taken.</p>
                 <p>View your pictures in the gallery and download them.</p>
               </div>
             </div>
-            <div className={classes.CameraSection}>
-              <section>
-                <video ref={handleVideoRef} />
-                <canvas
-                  ref={handleCanvasRef}
-                  width={2}
-                  height={2}
-                  onClick={handleCapture}
-                />
-              </section>
-              <section className={classes.Stickers}>
-                {stickers.map((stickerItem, index) => (
-                  <button key={index} onClick={() => setSticker(stickerItem)}>
-                    <img src={stickerItem.url} alt={`Sticker ${index}`} />
-                  </button>
-                ))}
-              </section>
+            <div className={classes.CamSection}>
+              <div className={classes.CameraAndSticker}>
+                <section>
+                  <video ref={handleVideoRef} />
+                  <canvas
+                    ref={handleCanvasRef}
+                    width={2}
+                    height={2}
+                    onClick={handleCapture}
+                  />
+                </section>
+                <section className={classes.Stickers}>
+                  {stickers.map((stickerItem, index) => (
+                    <button key={index} onClick={() => setSticker(stickerItem)}>
+                      <img src={stickerItem.url} alt={`Sticker ${index}`} />
+                    </button>
+                  ))}
+                </section>
+              </div>
               <div>
-                <section className={classes.Gallery}>
+                <section className={classes.ImageName}>
                   <input
                     type="text"
                     value={title}
                     onChange={(ev) => setTitle(ev.target.value)}
+                    placeholder="Enter a title for your image"
                   />
                 </section>
               </div>
             </div>
             <section className={classes.Gallery}>
-              <h2 className={classes.GalleryTitle}>
-                Step 4: Cherish this moment forever
-              </h2>
+              <h2 className={classes.GalleryTitle}>Your Gallery!</h2>
               <div className={classes.GalleryGrid}>
                 {pictures.map((picture, index) => (
                   <div key={index} className={classes.Picture}>
