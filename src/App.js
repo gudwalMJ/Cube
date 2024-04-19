@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { useWebcamCapture } from "./useWebcamCapture";
+import { useWebcamCapture } from "./components/useWebcamCapture";
+import WebcamEffect from "./components/WebcamEffect";
 import { Link, Switch, Route, Redirect } from "react-router-dom";
 // import stickers
 import bravoSticker from "./stickers/bravo.png";
@@ -17,11 +18,31 @@ import deleteIcon from "./icons/delete.png";
 import downloadIcon from "./icons/download.png";
 
 const useStyles = createUseStyles((theme) => ({
-  "@global body": {
-    background: theme.palette.background,
-    color: theme.palette.text,
-    fontFamily: "sans-serif",
+  "@global": {
+    html: {
+      scrollBehavior: "smooth",
+    },
+    body: {
+      background: theme.palette.background,
+      color: theme.palette.text,
+      fontFamily: "sans-serif",
+    },
   },
+  "@keyframes pulse": {
+    "0%": {
+      transform: "scale(1)",
+      opacity: 1,
+    },
+    "50%": {
+      transform: "scale(1.05)",
+      opacity: 0.7,
+    },
+    "100%": {
+      transform: "scale(1)",
+      opacity: 1,
+    },
+  },
+
   App: {
     padding: "0",
     background: theme.palette.primary,
@@ -39,13 +60,20 @@ const useStyles = createUseStyles((theme) => ({
     backgroundColor: "ede8f5",
     color: "#000",
     padding: "1rem",
+    marginTop: "-1rem",
     marginLeft: "1rem",
     marginRight: "1rem",
-    marginBottom: "1.5rem",
+    marginBottom: "1rem",
     "& h1": {
-      fontFamily: "sans-serif",
+      marginLeft: "50px",
+      fontSize: "3rem",
       cursor: "pointer",
-      fontSize: "1.5rem",
+      animation: "$pulse 2s infinite",
+      transition: "color 0.5s, text-shadow 0.5s",
+      "&:hover": {
+        color: "white",
+        textShadow: "0px 0px 10px rgba(134, 151, 196, 1)",
+      },
     },
     "& nav": {
       "& ul": {
@@ -58,13 +86,35 @@ const useStyles = createUseStyles((theme) => ({
           "& a": {
             color: "#000",
             textDecoration: "none",
-            "&:hover": {
-              textDecoration: "underline",
+            position: "relative",
+            fontWeight: "600",
+            "&::after": {
+              content: '""',
+              position: "absolute",
+              width: "0",
+              height: "2px",
+              bottom: "0",
+              left: "0",
+              backgroundColor: "#000",
+              transition: "width 0.3s ease-in-out",
+            },
+            "&:hover::after": {
+              width: "100%",
             },
           },
         },
       },
     },
+  },
+  MainContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-start",
+    gap: "20px",
+    padding: "20px",
+    flexWrap: "wrap",
+    marginLeft: "50px",
   },
   DescriptiveText: {
     flexDirection: "column",
@@ -73,7 +123,8 @@ const useStyles = createUseStyles((theme) => ({
     fontSize: "1.2rem",
     color: theme.palette.text,
     margin: "0 auto",
-    maxWidth: "650px",
+    maxWidth: "380px",
+    marginLeft: "15px",
     marginBottom: "2rem",
     "& p": {
       marginBottom: "-10px",
@@ -95,7 +146,7 @@ const useStyles = createUseStyles((theme) => ({
     background: "white",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
     borderRadius: "4px",
-    maxWidth: "700px",
+    maxWidth: "900px",
     width: "100%",
     "&:after": {
       content: '""',
@@ -105,7 +156,7 @@ const useStyles = createUseStyles((theme) => ({
     "& canvas": {
       boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
       margin: "20px",
-      maxWidth: "600px",
+      maxWidth: "800px",
       borderRadius: "4px",
     },
     "& video": {
@@ -116,7 +167,7 @@ const useStyles = createUseStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     overflowY: "auto",
-    maxHeight: "calc(3.5rem * 6)",
+    maxHeight: "calc(3.54rem * 6)",
     "& img": {
       height: "3rem",
       cursor: "pointer",
@@ -150,7 +201,7 @@ const useStyles = createUseStyles((theme) => ({
       },
     },
     "& label": {
-      fontSize: "1.1rem", // Slightly larger label text
+      fontSize: "1.1rem",
       color: theme.palette.text,
       marginBottom: "5px",
     },
@@ -167,7 +218,7 @@ const useStyles = createUseStyles((theme) => ({
   },
   GalleryGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
+    gridTemplateColumns: "repeat(3, 1fr)",
     gap: "10px",
     margin: "auto",
     marginBottom: "20px",
@@ -215,6 +266,10 @@ const useStyles = createUseStyles((theme) => ({
     "&:hover": {
       opacity: 0.6,
     },
+  },
+  BackToTop: {
+    textAlign: "center",
+    marginBottom: "20px",
   },
 }));
 
@@ -275,15 +330,18 @@ function App(props) {
 
   return (
     <div className={classes.App}>
-      <header className={classes.Header}>
+      <header className={classes.Header} id="top">
         <h1>SlapSticker</h1>
         <nav>
           <ul>
             <li>
-              <Link to="/">home</Link>
+              <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/readme">readme</Link>
+              <Link to="/readme">Readme</Link>
+            </li>
+            <li>
+              <a href="#gallery">Gallery</a>
             </li>
           </ul>
         </nav>
@@ -291,50 +349,57 @@ function App(props) {
       <Switch>
         <Route path="/" exact>
           <main>
-            <div>
-              <div className={classes.DescriptiveText}>
-                <p>
-                  Have you ever said something so dumb, you just wanted to slap
-                  yourself?
-                </p>
-                <p className={classes.DescriptiveTextBold}>Well now you can!</p>
-                <p> But why stop there? Try the other stickers as well!</p>
-                <p>Start with naming you picture and selecting a sticker.</p>
-                <p>With just a click the picture is taken.</p>
-                <p>View your pictures in the gallery and download them.</p>
-              </div>
-            </div>
-            <div className={classes.CamSection}>
-              <div className={classes.CameraAndSticker}>
-                <section>
-                  <video ref={handleVideoRef} />
-                  <canvas
-                    ref={handleCanvasRef}
-                    width={2}
-                    height={2}
-                    onClick={handleCapture}
-                  />
-                </section>
-                <section className={classes.Stickers}>
-                  {stickers.map((stickerItem, index) => (
-                    <button key={index} onClick={() => setSticker(stickerItem)}>
-                      <img src={stickerItem.url} alt={`Sticker ${index}`} />
-                    </button>
-                  ))}
-                </section>
-              </div>
+            <div className={classes.MainContainer}>
               <div>
-                <section className={classes.ImageName}>
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(ev) => setTitle(ev.target.value)}
-                    placeholder="Enter a title for your image"
-                  />
-                </section>
+                <div className={classes.DescriptiveText}>
+                  <p>
+                    Have you ever said something so dumb, you just wanted to
+                    slap yourself?
+                  </p>
+                  <p className={classes.DescriptiveTextBold}>
+                    Well now you can!
+                  </p>
+                  <p> But why stop there? Try the other stickers as well!</p>
+                  <p>Start with naming you picture and selecting a sticker.</p>
+                  <p>With just a click the picture is taken.</p>
+                  <p>View your pictures in the gallery and download them.</p>
+                </div>
+              </div>
+              <div className={classes.CamSection}>
+                <div className={classes.CameraAndSticker}>
+                  <section>
+                    <video ref={handleVideoRef} />
+                    <canvas
+                      ref={handleCanvasRef}
+                      width={2}
+                      height={2}
+                      onClick={handleCapture}
+                    />
+                  </section>
+                  <section className={classes.Stickers}>
+                    {stickers.map((stickerItem, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSticker(stickerItem)}
+                      >
+                        <img src={stickerItem.url} alt={`Sticker ${index}`} />
+                      </button>
+                    ))}
+                  </section>
+                </div>
+                <div>
+                  <section className={classes.ImageName}>
+                    <input
+                      type="text"
+                      value={title}
+                      onChange={(ev) => setTitle(ev.target.value)}
+                      placeholder="Enter a title for your image"
+                    />
+                  </section>
+                </div>
               </div>
             </div>
-            <section className={classes.Gallery}>
+            <section className={classes.Gallery} id="gallery">
               <h2 className={classes.GalleryTitle}>Your Gallery!</h2>
               <div className={classes.GalleryGrid}>
                 {pictures.map((picture, index) => (
@@ -363,10 +428,13 @@ function App(props) {
                   </div>
                 ))}
               </div>
+              <div className={classes.BackToTop}>
+                <a href="#top">Back to Top</a>
+              </div>
             </section>
           </main>
         </Route>
-        /** * Readme route */
+        {/* Readme route */}
         <Route path="/readme">
           <main>
             <h2>Devtest Readme</h2>
