@@ -38,7 +38,7 @@ const useStyles = createUseStyles((theme) => ({
     padding: "1rem",
     marginLeft: "1rem",
     marginRight: "1rem",
-    marginBottom: "5rem",
+    marginBottom: "1.5rem",
     "& h1": {
       fontFamily: "sans-serif",
       cursor: "pointer",
@@ -63,13 +63,13 @@ const useStyles = createUseStyles((theme) => ({
       },
     },
   },
-  Main: {
+  CameraSection: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
     padding: "20px",
-    paddingBottom: "80px",
+    paddingBottom: "100px",
     margin: "0 auto",
     background: "white",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
@@ -84,15 +84,31 @@ const useStyles = createUseStyles((theme) => ({
     "& canvas": {
       boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
       margin: "20px",
-      maxWidth: "700px",
+      maxWidth: "600px",
     },
     "& video": {
       display: "none",
     },
   },
+  DescriptiveText: {
+    flexDirection: "column",
+    alignItems: "left",
+    justifyContent: "center",
+    fontSize: "1.2rem",
+    color: theme.palette.text,
+    margin: "0 auto",
+    maxWidth: "650px",
+    marginBottom: "1rem",
+  },
+  DescriptiveTextBold: {
+    fontWeight: "600",
+  },
   Stickers: {
+    display: "flex",
+    flexDirection: "column",
+    marginTop: "20px",
     "& img": {
-      height: "4rem",
+      height: "3rem",
       cursor: "pointer",
       transition: "transform 0.2s ease-in-out",
       "&:hover": {
@@ -159,25 +175,15 @@ const useStyles = createUseStyles((theme) => ({
       opacity: 0.6,
     },
   },
-  DescriptiveText: {
-    fontSize: "1.2rem", // Larger font size for readability
-    fontWeight: "400", // Regular weight - adjust as needed
-    lineHeight: "1.6", // Space between lines for readability
-    color: theme.palette.text, // Text color from the theme
-    margin: "0 auto", // Centering the paragraph if needed
-    maxWidth: "700px", // Maximum width of the paragraph for better readability
-    textAlign: "justify", // Justify the text or use 'left' based on preference
-    marginBottom: "2rem", // Space after the paragraph before the next section
-  },
 }));
 
 const defaultStickers = [
+  slapSticker,
   bravoSticker,
   confettiSticker,
   eyesSticker,
   fireSticker,
   hornsSticker,
-  slapSticker,
 ];
 
 const stickers = defaultStickers.map((url) => {
@@ -195,7 +201,7 @@ function App(props) {
   // currently active sticker
   const [sticker, setSticker] = useState(stickers[0]);
   // title for the picture that will be captured
-  const [title, setTitle] = useState("SLAPPE!");
+  const [title, setTitle] = useState("Title");
 
   // webcam behavior hook
   const [
@@ -227,7 +233,6 @@ function App(props) {
     <div className={classes.App}>
       <header className={classes.Header}>
         <h1>SlapSticker</h1>
-
         <nav>
           <ul>
             <li>
@@ -242,36 +247,47 @@ function App(props) {
       <Switch>
         <Route path="/" exact>
           <main>
-            <p className={classes.DescriptiveText}>
-              Have you ever said something so dumb, you just wanted to slap
-              yourself? Well now you can! But you can also apply other stickers!
-            </p>
-            <section className={classes.Gallery}>
-              Step one: Give it a name
-              <input
-                type="text"
-                value={title}
-                onChange={(ev) => setTitle(ev.target.value)}
-              />
-            </section>
-            <section className={classes.Stickers}>
-              Step 2: select your sticker...
-              {stickers.map((stickerItem, index) => (
-                <button key={index} onClick={() => setSticker(stickerItem)}>
-                  <img src={stickerItem.url} alt={`Sticker ${index}`} />
-                </button>
-              ))}
-            </section>
-            <section className={classes.Main}>
-              Step three: Slap yourself!
-              <video ref={handleVideoRef} />
-              <canvas
-                ref={handleCanvasRef}
-                width={2}
-                height={2}
-                onClick={handleCapture}
-              />
-            </section>
+            <div>
+              <div className={classes.DescriptiveText}>
+                <p>
+                  Have you ever said something so dumb, you just wanted to slap
+                  yourself?
+                </p>
+                <p className={classes.DescriptiveTextBold}>Well now you can!</p>
+                <p> But why stop there? Try the other stickers as well!</p>
+
+                <p>Start with naming you picture and selecting a sticker.</p>
+                <p>With just a click the picture is taken.</p>
+                <p>View your pictures in the gallery and download them.</p>
+              </div>
+            </div>
+            <div className={classes.CameraSection}>
+              <section>
+                <video ref={handleVideoRef} />
+                <canvas
+                  ref={handleCanvasRef}
+                  width={2}
+                  height={2}
+                  onClick={handleCapture}
+                />
+              </section>
+              <section className={classes.Stickers}>
+                {stickers.map((stickerItem, index) => (
+                  <button key={index} onClick={() => setSticker(stickerItem)}>
+                    <img src={stickerItem.url} alt={`Sticker ${index}`} />
+                  </button>
+                ))}
+              </section>
+              <div>
+                <section className={classes.Gallery}>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(ev) => setTitle(ev.target.value)}
+                  />
+                </section>
+              </div>
+            </div>
             <section className={classes.Gallery}>
               <h2 className={classes.GalleryTitle}>
                 Step 4: Cherish this moment forever
