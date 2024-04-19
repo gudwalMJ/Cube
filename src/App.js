@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useWebcamCapture } from "./components/useWebcamCapture";
-import WebcamEffect from "./components/WebcamEffect";
 import { Link, Switch, Route, Redirect } from "react-router-dom";
 // import stickers
 import bravoSticker from "./stickers/bravo.png";
@@ -393,7 +392,7 @@ function App(props) {
                       type="text"
                       value={title}
                       onChange={(ev) => setTitle(ev.target.value)}
-                      placeholder="Enter a title for your image"
+                      placeholder="Name your picture"
                     />
                   </section>
                 </div>
