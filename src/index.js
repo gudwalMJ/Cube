@@ -4,9 +4,9 @@ import "normalize.css/normalize.css";
 import { ThemeProvider } from "react-jss";
 import { BrowserRouter } from "react-router-dom";
 
-import { theme } from "./theme";
+import { theme } from "./styles/theme";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
+import reportWebVitals from "./services/reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>

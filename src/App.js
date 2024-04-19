@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
-import { useWebcamCapture } from "./components/useWebcamCapture";
+import { useWebcamCapture } from "./hooks/useWebcamCapture";
 import { Link, Switch, Route, Redirect } from "react-router-dom";
 // import stickers
 import bravoSticker from "./stickers/bravo.png";
@@ -27,6 +27,7 @@ const useStyles = createUseStyles((theme) => ({
       fontFamily: "sans-serif",
     },
   },
+
   "@keyframes pulse": {
     "0%": {
       transform: "scale(1)",
@@ -52,6 +53,7 @@ const useStyles = createUseStyles((theme) => ({
       color: theme.palette.text,
     },
   },
+
   Header: {
     display: "flex",
     alignItems: "center",
@@ -105,6 +107,7 @@ const useStyles = createUseStyles((theme) => ({
       },
     },
   },
+
   MainContainer: {
     display: "flex",
     flexDirection: "row",
@@ -115,6 +118,7 @@ const useStyles = createUseStyles((theme) => ({
     flexWrap: "wrap",
     marginLeft: "50px",
   },
+
   DescriptiveText: {
     flexDirection: "column",
     alignItems: "left",
@@ -129,15 +133,18 @@ const useStyles = createUseStyles((theme) => ({
       marginBottom: "-10px",
     },
   },
+
   DescriptiveTextBold: {
     fontWeight: "600",
   },
+
   CameraAndSticker: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
   },
+
   CamSection: {
     padding: "20px",
     paddingBottom: "80px",
@@ -162,6 +169,7 @@ const useStyles = createUseStyles((theme) => ({
       display: "none",
     },
   },
+
   Stickers: {
     display: "flex",
     flexDirection: "column",
@@ -176,6 +184,7 @@ const useStyles = createUseStyles((theme) => ({
       },
     },
   },
+
   ImageName: {
     display: "flex",
     flexDirection: "column",
@@ -205,16 +214,19 @@ const useStyles = createUseStyles((theme) => ({
       marginBottom: "5px",
     },
   },
+
   Gallery: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
   },
+
   GalleryTitle: {
     marginBottom: "20px",
     textAlign: "center",
     width: "100%",
   },
+
   GalleryGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(3, 1fr)",
@@ -222,6 +234,7 @@ const useStyles = createUseStyles((theme) => ({
     margin: "auto",
     marginBottom: "20px",
   },
+
   Picture: {
     background: "white",
     padding: "1rem",
@@ -250,6 +263,7 @@ const useStyles = createUseStyles((theme) => ({
       wordBreak: "break-word",
     },
   },
+
   Actions: {
     display: "flex",
     justifyContent: "center",
@@ -259,6 +273,7 @@ const useStyles = createUseStyles((theme) => ({
       width: "25px",
     },
   },
+
   ActionButton: {
     border: "1px solid #ccc",
     cursor: "pointer",
@@ -266,12 +281,14 @@ const useStyles = createUseStyles((theme) => ({
       opacity: 0.6,
     },
   },
+
   BackToTop: {
     textAlign: "center",
     marginBottom: "20px",
   },
 }));
 
+// Stickers
 const defaultStickers = [
   slapSticker,
   bravoSticker,
@@ -286,9 +303,6 @@ const defaultStickers = [
 
 const stickers = defaultStickers.map((url) => {
   const img = new Image();
-  /*img.onload = () => {
-    console.log(`Sticker loaded: ${url}`);
-  };*/
   img.src = url;
   return { img, url };
 });
