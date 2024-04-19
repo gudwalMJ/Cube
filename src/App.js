@@ -2,19 +2,20 @@ import React, { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useWebcamCapture } from "./hooks/useWebcamCapture";
 import { Link, Switch, Route, Redirect } from "react-router-dom";
+import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 // import stickers
-import bravoSticker from "./stickers/bravo.png";
-import confettiSticker from "./stickers/confetti.png";
-import eyesSticker from "./stickers/eyes.png";
-import fireSticker from "./stickers/fire.png";
-import hornsSticker from "./stickers/horns.png";
-import slapSticker from "./stickers/slap.png";
-import crownSticker from "./stickers/crown.png";
-import heartEyesSticker from "./stickers/heartEyes.png";
-import confettiTwoSticker from "./stickers/confettiTwo.png";
+import bravoSticker from "./Assets/stickers/bravo.png";
+import confettiSticker from "./Assets/stickers/confetti.png";
+import eyesSticker from "./Assets/stickers/eyes.png";
+import fireSticker from "./Assets/stickers/fire.png";
+import hornsSticker from "./Assets/stickers/horns.png";
+import slapSticker from "./Assets/stickers/slap.png";
+import crownSticker from "./Assets/stickers/crown.png";
+import heartEyesSticker from "./Assets/stickers/heartEyes.png";
+import confettiTwoSticker from "./Assets/stickers/confettiTwo.png";
 // import icons
-import deleteIcon from "./icons/delete.png";
-import downloadIcon from "./icons/download.png";
+import deleteIcon from "./Assets/icons/delete.png";
+import downloadIcon from "./Assets/icons/download.png";
 
 const useStyles = createUseStyles((theme) => ({
   "@global": {
@@ -286,6 +287,25 @@ const useStyles = createUseStyles((theme) => ({
     textAlign: "center",
     marginBottom: "20px",
   },
+  effectButton: {
+    padding: "10px 20px",
+    fontSize: "1rem",
+    color: theme.palette.text,
+    backgroundColor: "#d1d1d1",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    margin: "10px 0",
+    transition: "background-color 0.3s ease",
+    "&:hover": { backgroundColor: "#e2e2e2" },
+    "&:focus": {
+      outline: "none",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    },
+    "&:active": {
+      transform: "scale(0.98)",
+    },
+  },
 }));
 
 // Stickers
@@ -314,6 +334,15 @@ function App(props) {
   const [sticker, setSticker] = useState(stickers[0]);
   // title for the picture that will be captured
   const [title, setTitle] = useState();
+  // Greyscale
+  const [isGrayscale, setIsGrayscale] = useState(false);
+
+  const filter = isGrayscale ? "grayscale(100%)" : "";
+  const toggleGrayscale = () => {
+    setIsGrayscale(!isGrayscale);
+  };
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   // webcam behavior hook
   const [
@@ -322,10 +351,14 @@ function App(props) {
     handleCapture, // callback function to trigger taking the picture
     pictures, // latest captured picture data object
     setPictures,
-  ] = useWebcamCapture(sticker?.img, title);
+  ] = useWebcamCapture(sticker?.img, title, filter);
 
   // To download the image
   const handleDownload = (dataUri, title) => {
+    if (!title || title.trim() === "") {
+      alert("Please provide a name before downloading the image.");
+      return;
+    }
     const link = document.createElement("a");
     link.download = `${title.replace(/\s+/g, "_")}.png`;
     link.href = dataUri;
@@ -353,9 +386,11 @@ function App(props) {
             <li>
               <Link to="/readme">Readme</Link>
             </li>
-            <li>
-              <a href="#gallery">Gallery</a>
-            </li>
+            {isHome && (
+              <li>
+                <a href="#gallery">Gallery</a>
+              </li>
+            )}
           </ul>
         </nav>
       </header>
@@ -410,6 +445,12 @@ function App(props) {
                     />
                   </section>
                 </div>
+                <button
+                  onClick={toggleGrayscale}
+                  className={classes.effectButton}
+                >
+                  Grayscale
+                </button>
               </div>
             </div>
             <section className={classes.Gallery} id="gallery">

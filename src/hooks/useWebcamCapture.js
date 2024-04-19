@@ -1,17 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export const useWebcamCapture = (stickerImg, title) => {
+export const useWebcamCapture = (stickerImg, title, filter) => {
   const [videoRef, setVideoRef] = useState();
   const [canvasRef, setCanvasRef] = useState();
   const [pictures, setPictures] = useState([]);
-
-  const onVideoRef = useCallback((node) => {
-    setVideoRef(node);
-  });
-
-  const onCanvasRef = useCallback((node) => {
-    setCanvasRef(node);
-  });
 
   const [initialized, setInitialized] = useState(false);
 
@@ -51,6 +43,17 @@ export const useWebcamCapture = (stickerImg, title) => {
     }
   }, [videoRef, canvasRef, initialized]);
 
+  //FILTER
+  useEffect(() => {
+    const appliedFilter = filter || "none";
+    if (videoRef) {
+      videoRef.style.filter = appliedFilter;
+    }
+    if (canvasRef) {
+      canvasRef.style.filter = appliedFilter;
+    }
+  }, [filter, videoRef, canvasRef]);
+
   const mousePos = useRef({ x: 0, y: 0 });
 
   const startRenderLoop = useCallback(() => {
@@ -59,7 +62,11 @@ export const useWebcamCapture = (stickerImg, title) => {
         const ctx = canvasRef.getContext("2d");
         const width = canvasRef.getAttribute("width");
         const height = canvasRef.getAttribute("height");
+        if (filter) {
+          ctx.filter = filter;
+        }
         ctx.drawImage(videoRef, 0, 0, width, height);
+        ctx.filter = "none";
 
         if (
           stickerImg &&
@@ -81,7 +88,7 @@ export const useWebcamCapture = (stickerImg, title) => {
       };
       requestAnimationFrame(renderFrame);
     }
-  }, [canvasRef, videoRef, stickerImg]);
+  }, [canvasRef, videoRef, stickerImg, filter]);
 
   useEffect(() => {
     startRenderLoop();
@@ -105,9 +112,12 @@ export const useWebcamCapture = (stickerImg, title) => {
     if (canvasRef) {
       const data = canvasRef.toDataURL("image/png");
       // Append new picture to the array instead of replacing
-      setPictures((pictures) => [...pictures, { dataUri: data, title }]);
+      setPictures((previousPictures) => [
+        ...previousPictures,
+        { dataUri: data, title },
+      ]);
     }
-  }, [canvasRef, title, pictures]);
+  }, [canvasRef, title]);
 
   return [setVideoRef, setCanvasRef, onCapture, pictures, setPictures];
 };
